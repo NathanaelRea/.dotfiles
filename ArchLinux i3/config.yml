@@ -1,0 +1,49 @@
+- name: Install Arch packages
+  hosts: localhost
+  become: true
+  become_method: sudo
+
+  vars:
+    packages:
+      - i3-gaps
+      - rxvt-unicode
+      - neovim
+      - neofetch
+      - ttf-firacode-nerd
+      - firefox
+      # nvchad
+      - ripgrep
+      - gcc
+
+  tasks:
+    - name: Install packages
+      package:
+        name: "{{ packages }}"
+        state: present
+
+- name: Setup Config
+  hosts: localhost
+
+  tasks:
+    - name: Configure i3
+      copy:
+        src: "{{ playbook_dir }}/i3.config"
+        dest: "{{ ansible_env.HOME }}/.config/i3/config"
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: '0644'
+
+    - name: Configure Xresources
+      copy:
+        src: "{{ playbook_dir }}/.Xresources"
+        dest: "{{ ansible_env.HOME }}/.Xresources"
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: '0644'
+      notify:
+        - Reload Xresources
+
+  handlers:
+    - name: Reload Xresources
+      command: xrdb ~/.Xresources
+
