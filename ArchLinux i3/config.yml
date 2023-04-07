@@ -1,19 +1,24 @@
-- name: Install Arch packages
+- name: Install custom Arch setup
   hosts: localhost
   become: true
-  become_method: sudo
 
   vars:
     packages:
-      - i3-gaps
-      - rxvt-unicode
+      - git
+      - npm
+      - rust
+      - scrot
+      - man-db
       - neovim
-      - neofetch
-      - ttf-firacode-nerd
       - firefox
+      - i3-gaps
+      - neofetch
+      - syncthing
+      - keepassxc
+      - ttf-firacode-nerd
       # nvchad
-      - ripgrep
       - gcc
+      - ripgrep
 
   tasks:
     - name: Install packages
@@ -23,6 +28,7 @@
 
 - name: Setup Config
   hosts: localhost
+  become: false
 
   tasks:
     - name: Configure i3
@@ -33,17 +39,22 @@
         group: "{{ ansible_user_id }}"
         mode: '0644'
 
-    - name: Configure Xresources
+    - name: Configure bashrc
       copy:
-        src: "{{ playbook_dir }}/.Xresources"
-        dest: "{{ ansible_env.HOME }}/.Xresources"
+        src: "{{ playbook_dir }}/.bashrc"
+        dest: "{{ ansible_env.HOME }}/.bashrc"
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
         mode: '0644'
-      notify:
-        - Reload Xresources
 
-  handlers:
-    - name: Reload Xresources
-      command: xrdb ~/.Xresources
+    - name: Download bash-git-prompt
+      git:
+        repo: https://github.com/magicmonty/bash-git-prompt
+        dest: ~/.bash-git-prompt
+        depth: 1
 
+    - name: Download NvChad
+      git:
+        repo: https://github.com/NvChad/NvChad
+        dest: ~/.config/nvim
+        depth: 1
