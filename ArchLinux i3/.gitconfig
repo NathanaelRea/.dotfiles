@@ -1,0 +1,10 @@
+[init]
+	defaultBranch = main
+[alias]
+	r2 = rebase -i HEAD~2
+	bl = branch --list
+	ls = log --oneline
+	aa = add .
+	smoosh = commit --amend --no-edit
+[commit]
+	gpgsign = true
