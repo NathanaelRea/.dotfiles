@@ -6,5 +6,7 @@
 	ls = log --oneline
 	aa = add .
 	smoosh = commit --amend --no-edit
+    getdate = "!f() { if [[ $OSTYPE == \"msys\" || $OSTYPE == \"cygwin\" ]]; then date +'%Y-%m-%d'; else echo $((Get-Date).ToString('yyyy-MM-dd')); fi }; f"
+    quick = "!git add . && git commit -m \"$(git getdate)\" && git push"
 [commit]
 	gpgsign = true
