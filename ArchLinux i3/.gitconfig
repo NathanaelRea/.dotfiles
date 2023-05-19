@@ -4,9 +4,8 @@
 	r2 = rebase -i HEAD~2
 	bl = branch --list
 	ls = log --oneline
-	aa = add .
 	smoosh = commit --amend --no-edit
-    getdate = "!f() { if [[ $OSTYPE == \"msys\" || $OSTYPE == \"cygwin\" ]]; then date=$(date +'%Y-%m-%d'); else date=$(echo $((Get-Date).ToString('yyyy-MM-dd'))); fi && read -p \"Enter additional notes (optional): \" notes && if [[ -n \"$notes\" ]]; then echo \"$date - $notes\"; else echo $date; fi; }; f"
-    quick = "!git add . && git commit -m \"$(git getdate)\" && git push"
+	getdate = "!f() { if [[ $OSTYPE == \"msys\" || $OSTYPE == \"cygwin\" ]]; then date=$(date +'%Y-%m-%d'); else date=$(echo $((Get-Date).ToString('yyyy-MM-dd'))); fi && read -p \"Enter additional notes (optional): \" notes && if [[ -n \"$notes\" ]]; then echo \"$date - $notes\"; else echo $date; fi; }; f"
+	quick = "!git add . && git commit -m \"$(git getdate)\" && git push"
 [commit]
 	gpgsign = true
