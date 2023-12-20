@@ -1,0 +1,48 @@
+- name: packages
+  tags: pack
+  hosts: localhost
+  become: true
+  tasks:
+    - name: update packages
+      community.general.pacman:
+        update_cache: true
+        upgrade: true
+    - name: install packages
+      community.general.pacman:
+        name:
+          - git
+          - rust
+          - neovim
+          - firefox
+          - keepassxc
+          - ttf-firacode-nerd
+
+- name: syncthing
+  tags: sync
+  hosts: localhost
+  become: true
+  tasks:
+    - name: install syncthing
+      community.general.pacman:
+        name: syncthing
+    - name: setup syncthing service
+      systemd_service:
+        name: syncthing@nathan.service
+        state: started
+        enabled: true
+
+- name: zsh
+  tags: zsh
+  hosts: localhost
+  become: true
+  tasks:
+    - name: install zsh
+      community.general.pacman:
+        name: zsh
+    - name: change shell
+      shell: chsh -s `which zsh`
+    - name: install Oh-my-zsh (piping shell scripts from the internet is safe)
+      shell: curl -L https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    - name: install zsh plugin autosuggestions
+      community.general.pacman:
+        name: zsh-autosuggestions
