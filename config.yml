@@ -27,22 +27,30 @@
         name: syncthing
     - name: setup syncthing service
       systemd_service:
-        name: syncthing@nathan.service
+        name: "syncthing@{{ ansible_user_id }}.service"
         state: started
         enabled: true
 
 - name: zsh
   tags: zsh
   hosts: localhost
-  become: true
   tasks:
-    - name: install zsh
+    - name: install zsh and plugins
       community.general.pacman:
-        name: zsh
+        name: 
+          - zsh
+          - zsh-autosuggestions
+      become: true
     - name: change shell
       shell: chsh -s `which zsh`
+      become: true
     - name: install Oh-my-zsh (piping shell scripts from the internet is safe)
       shell: curl -L https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-    - name: install zsh plugin autosuggestions
-      community.general.pacman:
-        name: zsh-autosuggestions
+    - name: copy .aliases to $HOME
+      copy:
+        src: .aliases
+        dest: ~/.aliases
+    - name: source .aliases in .zshrc
+      lineinfile:
+          path: ~/.zshrc
+          line: source $HOME/.aliases

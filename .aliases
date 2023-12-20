@@ -1,0 +1,9 @@
+alias ls='ls -a --color=auto'
+alias la='ls -laSh --color=auto'
+
+alias grep='grep --color=auto'
+
+alias up='sudo pacman -Syu'
+alias inst='sudo pacman -S '
+alias pacf='pacman -Ss'
+alias pacrm='sudo pacman -Rns'
