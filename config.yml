@@ -17,6 +17,16 @@
           - keepassxc
           - ttf-firacode-nerd
 
+- name: git
+  tags: git
+  hosts: localhost
+  tasks:
+    - name: copy .gitconfig to $HOME
+      copy:
+        src: .gitconfig
+        dest: ~/.gitconfig
+
+
 - name: syncthing
   tags: sync
   hosts: localhost
