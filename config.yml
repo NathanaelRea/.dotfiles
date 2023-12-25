@@ -1,4 +1,4 @@
-- name: packages
+- name: base-packages
   tags: pack
   hosts: localhost
   become: true
@@ -7,15 +7,37 @@
       community.general.pacman:
         update_cache: true
         upgrade: true
-    - name: install packages
+    - name: install base packacges
       community.general.pacman:
         name:
-          - git
-          - rust
+    - name: install neovim and deps
+      community.general.pacman:
+        name:
           - neovim
+          - gcc
+          - ripgrep
+          - ttf-firacode-nerd
+
+- name: extra-packages
+  tags: extra-pack
+  hosts: localhost
+  become: true
+  tasks:
+    - name: install language packages
+      community.general.pacman:
+        name:
+          - rust
+          - nodejs
+    - name: install desktop packages
+      community.general.pacman:
+        name:
           - firefox
           - keepassxc
-          - ttf-firacode-nerd
+          - docker
+          - docker-compose
+          - libreoffice
+          - gimp
+          - inkscape
 
 - name: git
   tags: git
@@ -25,7 +47,6 @@
       copy:
         src: .gitconfig
         dest: ~/.gitconfig
-
 
 - name: syncthing
   tags: sync
@@ -47,7 +68,7 @@
   tasks:
     - name: install zsh and plugins
       community.general.pacman:
-        name: 
+        name:
           - zsh
           - zsh-autosuggestions
       become: true
@@ -62,5 +83,5 @@
         dest: ~/.aliases
     - name: source .aliases in .zshrc
       lineinfile:
-          path: ~/.zshrc
-          line: source $HOME/.aliases
+        path: ~/.zshrc
+        line: source $HOME/.aliases
