@@ -21,6 +21,11 @@
   hosts: localhost
   tags: git
   tasks:
+    - name: install gh
+      package:
+        state: present
+        name:
+          - gh
     - name: copy .gitconfig to $HOME
       copy:
         src: .gitconfig
