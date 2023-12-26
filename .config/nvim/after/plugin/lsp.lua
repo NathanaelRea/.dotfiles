@@ -7,15 +7,15 @@ require('mason-lspconfig').setup({
   ensure_installed = {
 	'lua_ls',
 	'rust_analyzer',
-	'clangd',
-	'omnisharp',
+--	'clangd',
+--	'omnisharp',
 	'eslint',
 	'tsserver',
 	'tailwindcss',
 	'dockerls',
 	'docker_compose_language_service',
 	'prismals',
-	'pylsp',
+--	'pylsp',
   },
   handlers = {
     lsp.default_setup,
