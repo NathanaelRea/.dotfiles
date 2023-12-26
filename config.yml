@@ -2,14 +2,6 @@
   hosts: localhost
   become: true
   tasks:
-    - name: install packages and deps
-      package:
-        state: present
-        name:
-          - neovim
-          - gcc
-          - ripgrep
-          - fzf
     - name: install languages
       package:
         state: present
@@ -77,6 +69,25 @@
       copy:
         src: tmux-sessionizer
         dest: ~/tmux-sessionizer
+        mode: a+x
+
+- name: neovim
+  hosts: localhost
+  tags: neovim
+  tasks:
+    - name: install neovim
+      package:
+        state: present
+        name:
+          - neovim
+          - gcc
+          - ripgrep
+          - fzf
+      become: true
+    - name: copy .config/nvim to $HOME
+      copy:
+        src: .config/nvim
+        dest: ~/.config
 
 - name: distro specific
   hosts: localhost

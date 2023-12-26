@@ -2,8 +2,12 @@
   hosts: localhost
   become: true
   tasks:
+    - name: add newer neovim
+      ansible.builtin.apt_repository:
+        repo: ppa:neovim-ppa/unstable
     - name: install ubuntu packages
       package:
         state: present
         name:
           - fonts-firacode
+          - neovim
