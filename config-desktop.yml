@@ -1,0 +1,29 @@
+- name: desktop-packages
+  tags: desktop-pack
+  hosts: localhost
+  become: true
+  tasks:
+    - name: install desktop packages
+      community.general.pacman:
+        name:
+          - firefox
+          - keepassxc
+          - docker
+          - docker-compose
+          - libreoffice
+          - gimp
+          - inkscape
+
+- name: syncthing
+  tags: sync
+  hosts: localhost
+  become: true
+  tasks:
+    - name: install syncthing
+      community.general.pacman:
+        name: syncthing
+    - name: setup syncthing service
+      systemd_service:
+        name: "syncthing@{{ ansible_user_id }}.service"
+        state: started
+        enabled: true

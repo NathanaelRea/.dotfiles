@@ -1,0 +1,9 @@
+- name: ubuntu story
+  hosts: localhost
+  become: true
+  tasks:
+    - name: install ubuntu packages
+      package:
+        state: present
+        name:
+          - fonts-firacode

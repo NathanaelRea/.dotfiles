@@ -1,73 +1,38 @@
-- name: base-packages
-  tags: pack
+- name: packages
   hosts: localhost
   become: true
   tasks:
-    - name: update packages
-      community.general.pacman:
-        update_cache: true
-        upgrade: true
-    - name: install base packacges
-      community.general.pacman:
-        name:
-    - name: install neovim and deps
-      community.general.pacman:
+    - name: install packages and deps
+      package:
+        state: present
         name:
           - neovim
           - gcc
           - ripgrep
-          - ttf-firacode-nerd
-
-- name: extra-packages
-  tags: extra-pack
-  hosts: localhost
-  become: true
-  tasks:
-    - name: install language packages
-      community.general.pacman:
+          - fzf
+    - name: install languages
+      package:
+        state: present
         name:
-          - rust
+          - rustc
           - nodejs
-    - name: install desktop packages
-      community.general.pacman:
-        name:
-          - firefox
-          - keepassxc
-          - docker
-          - docker-compose
-          - libreoffice
-          - gimp
-          - inkscape
 
 - name: git
-  tags: git
   hosts: localhost
+  tags: git
   tasks:
     - name: copy .gitconfig to $HOME
       copy:
         src: .gitconfig
         dest: ~/.gitconfig
 
-- name: syncthing
-  tags: sync
-  hosts: localhost
-  become: true
-  tasks:
-    - name: install syncthing
-      community.general.pacman:
-        name: syncthing
-    - name: setup syncthing service
-      systemd_service:
-        name: "syncthing@{{ ansible_user_id }}.service"
-        state: started
-        enabled: true
-
 - name: zsh
-  tags: zsh
   hosts: localhost
+  tags: zsh
   tasks:
-    - name: install zsh and plugins
-      community.general.pacman:
+    - name: install zsh
+      package:
+        state: present
         name:
           - zsh
           - zsh-autosuggestions
@@ -77,11 +42,41 @@
       become: true
     - name: install Oh-my-zsh (piping shell scripts from the internet is safe)
       shell: curl -L https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    - name: copy .zshrc to $HOME
+      copy:
+        src: .zshrc
+        dest: ~/.zshrc
     - name: copy .aliases to $HOME
       copy:
         src: .aliases
         dest: ~/.aliases
-    - name: source .aliases in .zshrc
-      lineinfile:
-        path: ~/.zshrc
-        line: source $HOME/.aliases
+    - name: copy key-bindings to $HOME
+      copy:
+        src: key-bindings.zsh
+        dest: ~/key-bindings.zsh
+
+- name: tmux
+  hosts: localhost
+  tags: tmux
+  tasks:
+    - name: install tmux
+      package:
+        state: present
+        name:
+          - tmux
+    - name: copy .tmux.conf to $HOME
+      copy:
+        src: .tmux.conf
+        dest: ~/.tmux.conf
+    - name: copy tmux-sessionizer to $HOME
+      copy:
+        src: tmux-sessionizer
+        dest: ~/tmux-sessionizer
+
+- name: distro specific
+  hosts: localhost
+  tasks:
+    - include_tasks: ubuntu.yml
+      when: ansible_os_family == "Ubuntu"
+    - include_tasks: archlinux.yml
+      when: ansible_os_family == "Archlinux"

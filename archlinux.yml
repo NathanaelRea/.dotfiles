@@ -1,0 +1,9 @@
+- name: archlinux story
+  hosts: localhost
+  become: true
+  tasks:
+    - name: install specific packages
+      package:
+        state: present
+        name:
+          - ttf-firacode-nerd
