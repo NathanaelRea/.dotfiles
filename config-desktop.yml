@@ -4,15 +4,24 @@
   become: true
   tasks:
     - name: install desktop packages
-      community.general.pacman:
+      package:
         name:
           - firefox
           - keepassxc
-          - docker
           - docker-compose
           - libreoffice
           - gimp
           - inkscape
+    - name: install docker.io
+      package:
+        name:
+          - docker.io
+      when: ansible_os_family == "Ubuntu"
+    - name: install docker
+      package:
+        name:
+          - docker
+      when: ansible_os_family != "Ubuntu"
 
 - name: syncthing
   tags: sync
@@ -20,10 +29,15 @@
   become: true
   tasks:
     - name: install syncthing
-      community.general.pacman:
+      package:
         name: syncthing
     - name: setup syncthing service
       systemd_service:
         name: "syncthing@{{ ansible_user_id }}.service"
         state: started
         enabled: true
+
+- name: base_config
+  hosts: localhost
+  tasks:
+    - include_tasks: config.yml
